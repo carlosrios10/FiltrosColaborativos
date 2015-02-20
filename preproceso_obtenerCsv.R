@@ -1,10 +1,11 @@
+setwd("C:\\Users\\Usuarioç\\Desktop\\carlos\\Tesis\\datasets")
 # Content of Files
 # users.dat: consists of a set of users such that each user has a unique id and a geospatial location (latitude and longitude) that represents the user home town location.
 # venues.dat: consists of a set of venues (e.g., restaurants) such that each venue has a unique id and a geospatial location (lattude and longitude).
 # checkins.dat: marks the checkins (visits) of users at venues. Each check-in has a unique id as well as the user id and the venue id.
 # socialgraph.dat: contains the social graph edges (connections) that exist between users. Each social connection consits of two users (friends) represented by two unique ids (first_user_id and second_user_id).
 # ratings.dat: consists of implicit ratings that quantifies how much a user likes a specific venue.
-
+library(data.table)
 readLines("umn_foursquare_datasets/venues.dat",n=2)
 venuesData <- read.delim('umn_foursquare_datasets/venues.dat', header = F, sep="|",skip=2) 
 names(venuesData)<-c("id","latitude","longitude")
@@ -38,10 +39,29 @@ tail(checkinsData)
 checkinsData<-checkinsData[-1021967,]
 write.csv(checkinsData,file="datasets_csv/checkins.csv", row.names = F)
 
-readLines("datos/umn_foursquare_datasets/ratings.dat",n=2)
-ratingsData<-read.delim('datos/umn_foursquare_datasets/ratings.dat', header = F, sep="|",skip=2) 
+readLines("foursquare/umn_foursquare_datasets/ratings.dat",n=2)
+ratingsData<-read.delim('foursquare/umn_foursquare_datasets/ratings.dat', header = F, sep="|",skip=2) 
 names(ratingsData)<-c("user_id","venue_id","rating")
 head(ratingsData)
 tail(ratingsData)
+str(ratingsData)
 ratingsData<-ratingsData[-2809581,]
-write.csv(ratingsData,file="datos/datasets_csv/ratings.csv", row.names = F, )
+ratingsData$user_id<-as.numeric(as.character(ratingsData$user_id))
+write.csv(ratingsData,file="foursquare/datasets_csv/ratings.csv", row.names = F,quote = F)
+
+ratingsData<-fread("foursquare/datasets_csv/ratings.csv",colClasses = c("numeric","numeric","numeric"))
+ratingsMean<-ratingsData[,mean(rating),by=list(user_id,venue_id)]
+setnames(ratingsMean,c("user_id","venue_id","rating"))
+str(ratingsMean)
+ratingsMean$user_id<-format(ratingsMean$user_id,scientific = FALSE,trim=T)
+ratingsMean$venue_id<-format(ratingsMean$venue_id,scientific = FALSE,trim=T)
+ratingsMean$rating<-format(ratingsMean$rating,scientific = FALSE, digit=3,trim=T)
+## obtengo los que calificaron como maximo a 100 lugares.
+ratingsMeansample<-ratingsMean[,.N,by=list(user_id)]
+d<-ratingsMeansample[10<N<100,]
+hist(d$N, breaks=1000)
+head(ratingsMeansample[N<100])
+tail(ratingsMeansample)
+##guardo sin nombre de columnas por mahout
+write.table(ratingsMean,file="foursquare/datasets_csv/ratingsMean.csv", row.names = F, col.names= F,sep=",",quote = F)
+
