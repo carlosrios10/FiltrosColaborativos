@@ -30,3 +30,32 @@ write.table(checkinsData[,c("user_id","venue_id","tiempoNum")],file="algoritmo/d
 
 write.table(venuesData[,1],file="algoritmo/datos/trainActividades.txt", row.names = F,col.names=F)
 
+#### reducir red social
+
+socialgraphData<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/socialgraph.csv")
+ratingsMeanReducido<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido7.csv",
+                              header=F)
+table(ratingsMeanReducido$V1)
+vertices<-data.frame(ver=vertices)
+pp<-socialgraphData[1:20,]
+length(unique(pp$first_user_id))
+length(unique(pp$second_user_id))
+
+redSocialReducida<-merge(socialgraphData,vertices, by.x="first_user_id", by.y="ver",all.y=T)
+redSocialReducida2<-merge(redSocialReducida,vertices, by.x="second_user_id", by.y="ver",all.y=T)
+
+17778*2
+head(redSocialReducida)
+tail(redSocialReducida)
+length(unique(redSocialReducida2$first_user_id))
+length(unique(redSocialReducida2$second_user_id))
+write.csv(redSocialReducida,file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/redSocialReducida7.csv", 
+            row.names = F)
+
+### 
+df<- read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/dataset2.csv")
+dfMatrix <- as(df, "realRatingMatrix")
+dfm<-as(dfMatrix, "matrix")
+tdfm<-t(dfm)
+cor(tdfm)
+dist(dfm)

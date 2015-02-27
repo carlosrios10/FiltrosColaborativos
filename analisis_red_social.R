@@ -1,22 +1,51 @@
 setwd("C:\\Users\\Usuarioç\\Desktop\\carlos\\Tesis")
 getwd()
 library(igraph)
-usersData<-read.csv("datasets_csv/users.csv")
-venuesData<-read.csv("datasets_csv/venues.csv")
-checkinsData<-read.csv("datasets_csv/checkins.csv")
-socialgraphData<-read.csv("datasets_csv/socialgraph.csv")
-ratingsData<-read.csv("datasets_csv/ratings.csv",colClasses=c("numeric","numeric","numeric"))
-ratingsData$user_id<-format(ratingsData$user_id,scientific = FALSE,trim=T)
-ratingsData$venue_id<-format(ratingsData$venue_id,scientific = FALSE,trim=T)
-write.table(ratingsData,file="datasets_csv/ratings2.csv", row.names = F, col.names= F,sep=",",quote = F)
+socialgraphData<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/socialgraph.csv")
+ratingsMeanReducido<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",
+                              header=F)
 
-head(ratingsData)
-str(ratingsData)
-boxplot(ratingsData$venue_id)
-table(ratingsData$venue_id)
-4e+05
+head(ratingsMeanReducido)
+str(ratingsMeanReducido)
+length(unique(ratingsMeanReducido$V1))
+vertices<-unique(ratingsMeanReducido$V1)
+vertices<-as.character(vertices)
+str(vertices)
+length(vertices)
 
-grafo<-graph.data.frame(socialgraphData, directed=F, vertices=NULL)
+head(socialgraphData,n = 20)
+tail(socialgraphData)
+str(socialgraphData)
+length(unique(socialgraphData$first_user_id))
+length(unique(socialgraphData$second_user_id))
+socialgraphData$first_user_id<-as.character(socialgraphData$first_user_id)
+socialgraphData$second_user_id<-as.character(socialgraphData$second_user_id)
+
+
+
+sum(vertices%notin%socialgraphData$first_user_id)
+sum(socialgraphData$first_user_id==vertices)
+which (!is.element(vertices, socialgraphData$first_user_id))
+vertex<-vertices[which (is.element(vertices, socialgraphData$first_user_id))]
+
+
+
+grafo<-graph.data.frame(socialgraphData, directed=T, vertices=NULL)
+subv <- c("1228393")
+socialgraphData$first_user_id==
+str(socialgraphData)    
+
+grafoReducido<-induced.subgraph(grafo, vids=vertex)
+plot(grafoReducido, layout=layout.fruchterman.reingold, vertex.size=4,
+     vertex.label.dist=0.5, vertex.color="red", edge.arrow.size=0.5)
+grafoReducidoDF<-get.data.frame(grafoReducido, what=c( "edges"))
+
+head(grafoReducidoDF,n=20)
+tail(grafoReducidoDF)
+str(grafoReducidoDF)
+
+grafoReducidoDF10<-grafoReducidoDF[grafoReducidoDF$from==10,]
+
 #medidas de centralidad
 is.directed(grafo)
 max(degree(grafo))
@@ -27,16 +56,4 @@ str(adj)
 adj[1,1:10]
 
 
-aa<-socialgraphData[1:100,]
 
-aalista<-as.list(aa)
-
-g <- graph.ring(10)
-get.adjlist(g)
-get.adjedgelist(g)
-str(grafo)
-vec<-as.numeric(as.vector(socialgraphData[1,]))
-str(vec[[1]])
-data.m
-v<-socialgraphData[[1,1:2]]
-str(v)

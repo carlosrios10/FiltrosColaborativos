@@ -15,13 +15,13 @@ dim(venuesData)
 venuesData<-venuesData[-1143091,]
 write.csv(venuesData,file="datasets_csv/venues.csv", row.names = F)
 
-readLines("umn_foursquare_datasets/socialgraph.dat",n=2)
-socialData<-read.delim('umn_foursquare_datasets/socialgraph.dat', header = F, sep="|",skip=2) 
+readLines("foursquare/umn_foursquare_datasets/socialgraph.dat",n=2)
+socialData<-read.delim('foursquare/umn_foursquare_datasets/socialgraph.dat', header = F, sep="|",skip=2) 
 names(socialData)<-c("first_user_id","second_user_id")
 head(socialData)
 tail(socialData,n=100)
 socialData<-socialData[-27098473:-27098488,]
-write.csv(socialData,file="datasets_csv/socialgraph.csv", row.names = F)
+write.csv(socialData,file="foursquare/datasets_csv/socialgraph.csv", row.names = F,quote = F)
 
 readLines("umn_foursquare_datasets/users.dat",n=2)
 usersData<-read.delim('umn_foursquare_datasets/users.dat', header = F, sep="|",skip=2) 
