@@ -1,7 +1,5 @@
-setwd("C:\\Users\\Usuarioç\\Desktop\\carlos\\Tesis")
-getwd()
 library(igraph)
-socialgraphData<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/socialgraph.csv")
+socialgraphData<-read.csv(getDataSetPath("Csocialgraph.csv"))
 ratingsMeanReducido<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",
                               header=F)
 
@@ -57,5 +55,24 @@ adj<-get.adjacency(grafo)
 str(adj)
 adj[1,1:10]
 
-
+## Analisis de la red social reducida
+redSocialDF<-read.csv(file = getDataSetPath("redSocialReducida.csv"),header = F,
+                      colClasses="character");
+grafo<-graph.data.frame(redSocialDF, directed=T, vertices=NULL)
+is.directed(grafo)
+max(degree(grafo,mode="all"))
+min(degree(grafo))
+dd<-degree.distribution(grafo)
+plot(dd)
+boxplot(dd)
+bw<-betweenness(grafo)
+plot(bw)
+boxplot(bw)
+which.max(bw)
+cc<-closeness(grafo)
+plot(cc)
+boxplot(cc)
+max(cc)
+min(cc)
+which.max(cc)
 

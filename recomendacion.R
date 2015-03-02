@@ -1,5 +1,3 @@
-setwd("C:\\Users\\Usuarioç\\Desktop\\carlos\\Tesis\\workspaceR\\Recomendacion\\FiltrosColaborativos")
-getwd()
 rm(list = ls())
 install.packages("recommenderlab")
 install.packages("data.table")
