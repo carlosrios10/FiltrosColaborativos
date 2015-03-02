@@ -4,6 +4,6 @@ getDataSetPath<-function(dataSetName){
                 return (paste(wd,"/datos/umn_foursquare_datasets/",dataSetName,sep="/"))
         }
         else{
-                return (paste(wd,"/datos/datasets_csv/",dataSetName,sep="/"))
+                return (paste(wd,"/datasets/foursquare/datasets_csv/",dataSetName,sep="/"))
         }
 }

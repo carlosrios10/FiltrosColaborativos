@@ -1,7 +1,9 @@
-wd=switch(Sys.info()["machine"][[1]],
-               'x86-64'="D:/DOCTORADO/Proyectos"
-        )
-setwd(paste(wd,"/Recomendacion/FiltrosColaborativos",sep = "/"))
+wd<-switch(Sys.info()["nodename"][[1]],
+                           'USUARIOÇ-PC'="C:/Users/Usuarioç/Desktop/carlos/Tesis/workspaceR")
+wd<-(if(Sys.info()["user"][[1]]=="Usuarioç") "C:/Users/Usuarioç/Desktop/carlos/Tesis"
+        else "D:/DOCTORADO/Proyectos")
+setwd(paste(wd,"workspaceR/Recomendacion/FiltrosColaborativos",sep = "/"))
+
 # Content of Files
 # users.dat: consists of a set of users such that each user has a unique id and a geospatial location (latitude and longitude) that represents the user home town location.
 # venues.dat: consists of a set of venues (e.g., restaurants) such that each venue has a unique id and a geospatial location (lattude and longitude).
