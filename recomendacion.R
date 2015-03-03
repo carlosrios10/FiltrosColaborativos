@@ -3,10 +3,9 @@ install.packages("recommenderlab")
 install.packages("data.table")
 library("recommenderlab")
 library(plyr)
-
 library(Hmisc)
 ###lectura del set de datos
-ratingsMean<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMean.csv")
+ratingsMean<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMean.csv",header = F)
 names(ratingsMean)<-c("user_id","venue_id","rating")
 head(ratingsMean)
 str(ratingsMean)
@@ -61,12 +60,20 @@ boxplot(rowCounts(rRMatrixReducido))
 max(rowCounts(rRMatrixReducido))
 min(rowCounts(rRMatrixReducido))
 mean(rowCounts(rRMatrixReducido))
-
-
-
 df<-(as(rRMatrixReducido, "data.frame"))
-write.table(df,file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido7.csv", row.names = F, col.names= F,sep=",",quote = F)
+write.table(df,file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv", row.names = F, col.names= F,sep=",",quote = F)
+## Analisis de ratingsMeanReducido
+ratingsMean<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",header = F)
+names(ratingsMean)<-c("user_id","venue_id","rating")
+head(ratingsMean)
+str(ratingsMean)
+rRMatrix <- as(ratingsMean, "realRatingMatrix")
+m<-as(rRMatrix, "dgTMatrix")
+head(m)
+m[1:2,1:10]
+cor(m)
 
+sim<-similarity(rRMatrix, method = "pearson")
 ##Crear un recomendador
 userCFModel <- Recommender(rRMatrix, method = "UBCF")
 names(getModel(userCFModel))
