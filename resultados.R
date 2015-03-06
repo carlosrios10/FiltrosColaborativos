@@ -24,19 +24,36 @@ resTodos<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/r
 resTodos$Nvecinos<-as.factor(as.character(resTodos$Nvecinos))
 resTodos$Nvecinos<-ordered(resTodos$Nvecinos,levels = c("10","30","60","90","125","200"))
 
+### Voy a mostrar Coseno y Pearson.
+### completar los Nvecinos de Threshold.
+
+resultadoPC<-resTodos[resTodos$Similitud=="COSENO"|resTodos$Similitud=="PEARSON" ,]
+resultadoPC[resultadoPC$TVecinos=="THRESHOLD"&resultadoPC$Similitud=="PEARSON",3]<-vecinosP$mean
+resultadoPC[resultadoPC$TVecinos=="THRESHOLD"&resultadoPC$Similitud=="COSENO",3]<-vecinosC$mean
+
 resTodosW<-melt(resTodos[1:12,],id.vars = c("Similitud", "TVecinos","Nvecinos","Threshold"));
 resThr<-melt(resTodos[13:18,],id.vars = c("Similitud", "TVecinos","Nvecinos","Threshold"));
 
-ggplot(data=resTodosW, aes(x=Nvecinos, y=value, group=TVecinos, colour=TVecinos)) + 
-    geom_line(aes(linetype=TVecinos)) + geom_point(aes(shape=TVecinos),size=4) +
-    facet_grid(variable ~ .)
+ggplot(data=resultadoPC, aes(x=Nvecinos, y=Mae, group=TVecinos, colour=TVecinos)) + 
+    geom_line(aes(linetype=TVecinos)) + 
+    geom_point(aes(shape=TVecinos),size=3) +
+    xlim(-10, 280)+
+    facet_grid(Similitud ~ .)
 
 
-ggplot(data=resTodosW, aes(x=Nvecinos, y=value)) + 
-    geom_bar(aes(fill = TVecinos), stat="identity",position=position_dodge(),size=.3) +# Thinner lines
-    facet_grid(variable ~ .) +
+ggplot(data=resultadoPC, aes(x=Nvecinos, y=Mae)) + 
+    geom_bar(aes(fill = TVecinos), stat="identity",position=position_dodge(),size=.10) +# Thinner lines
+    facet_grid(Similitud ~ .) +
     scale_fill_grey(name="Tipo de Vecinos") +      # Set legend title
-    xlab("Numero de Vecinos/Amigos") + ylab("Valor") + # Set axis labels
+    xlab("Numero de Vecinos/Amigos") + ylab("MAE") + # Set axis labels
+    ggtitle("UBCF") +  # Set title
+    theme_bw()
+
+ggplot(data=resultadoPC, aes(x=Nvecinos, y=Mae)) + 
+    geom_vline+
+    facet_grid(Similitud ~ .) +
+    scale_fill_grey(name="Tipo de Vecinos") +      # Set legend title
+    xlab("Numero de Vecinos/Amigos") + ylab("MAE") + # Set axis labels
     ggtitle("UBCF") +  # Set title
     theme_bw()
  

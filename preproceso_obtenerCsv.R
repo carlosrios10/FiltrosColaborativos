@@ -1,7 +1,6 @@
 wd<-switch(Sys.info()["nodename"][[1]],
                            'USUARIOÇ-PC'="C:/Users/Usuarioç/Desktop/carlos/Tesis/workspaceR")
-wd<-(if(Sys.info()["user"][[1]]=="Usuarioç") "C:/Users/Usuarioç/Desktop/carlos/Tesis"
-        else "D:/DOCTORADO/Proyectos")
+wd<-getwd()
 setwd(paste(wd,"workspaceR/Recomendacion/FiltrosColaborativos",sep = "/"))
 
 # Content of Files
