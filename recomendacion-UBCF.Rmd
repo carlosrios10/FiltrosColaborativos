@@ -1,0 +1,56 @@
+---
+title: "Filtros Colaborativos"
+author: "carlos rios"
+date: "Monday, February 23, 2015"
+output: pdf_document
+---
+
+```{r,message=FALSE }
+library(ggplot2)
+library(plyr)
+library(reshape2)
+```
+
+### Resultados de la Evaluacion
+```{r,echo=FALSE, message=FALSE }
+resTodos<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCFTodos.csv")
+usuariosVecinos<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/usuariosVecinos.csv",header=T)
+vecinosP<-ddply(usuariosVecinos,.(Threshold),summarise,mean=mean(CantVecinos), total= sum(CantVecinos),totalCeros=sum(CantVecinos==0) )
+usuariosVecinosC<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/usuariosVecinosC.csv",header=T)
+vecinosC<-ddply(usuariosVecinosC,.(Threshold),summarise,mean=mean(CantVecinos), total= sum(CantVecinos),totalCeros=sum(CantVecinos==0))
+
+resultadoPC<-resTodos[resTodos$Similitud=="COSENO"|resTodos$Similitud=="PEARSON" ,]
+resultadoPC[resultadoPC$TVecinos=="THRESHOLD"&resultadoPC$Similitud=="PEARSON",3]<-vecinosP$mean
+resultadoPC[resultadoPC$TVecinos=="THRESHOLD"&resultadoPC$Similitud=="COSENO",3]<-vecinosC$mean
+
+
+
+```
+
+```{r}
+resultadoPC
+```
+
+Grafico
+```{r}
+
+
+ggplot(data=resultadoPC, aes(x=Nvecinos, y=Mae, group=TVecinos, colour=TVecinos)) + 
+    geom_line(aes(linetype=TVecinos)) + 
+    geom_point(aes(shape=TVecinos),size=2) +
+    xlim(-10, 280)+
+    facet_grid(Similitud ~ .)
+
+```
+
+Vecinos con Pearson
+
+```{r}
+vecinosP
+```
+
+Vecinos con Coseno
+```{r}
+vecinosC
+```
+

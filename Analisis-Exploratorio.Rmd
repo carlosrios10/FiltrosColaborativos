@@ -1,0 +1,18 @@
+---
+title: "Analisis Exploratorio"
+author: "carlos rios"
+date: "Thursday, March 05, 2015"
+output: pdf_document
+---
+
+
+```{r}
+summary(cars)
+```
+
+
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
