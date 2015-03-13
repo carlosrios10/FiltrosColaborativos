@@ -21,12 +21,16 @@ socialgraphData$second_user_id<-as.character(socialgraphData$second_user_id)
 
 
 
+
 sum(vertices%notin%socialgraphData$first_user_id)
 sum(socialgraphData$first_user_id==vertices)
 vertices[which (!is.element(vertices, socialgraphData$first_user_id))]
 vertex<-vertices[which (is.element(vertices, socialgraphData$first_user_id))]
 
 grafo<-graph.data.frame(socialgraphData, directed=T, vertices=NULL)
+
+
+
 subv <- c("1228393")
 socialgraphData$first_user_id==
 str(socialgraphData)    
@@ -58,8 +62,15 @@ adj[1,1:10]
 ## Analisis de la red social reducida
 redSocialDF<-read.csv(file = getDataSetPath("redSocialReducida.csv"),header = F,
                       colClasses="character");
+
+redSocialDF<-read.csv(file ="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/redSocialReducida.csv",header = F,
+                      colClasses="character");
+
 grafo<-graph.data.frame(redSocialDF, directed=T, vertices=NULL)
+grafoU<- as.undirected(grafo,mode ="collapse")
+write.graph(grafoU,file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/redSocialReducida.",format="pajek")
 is.directed(grafo)
+degree(grafoU,v="30848")
 max(degree(grafo,mode="all"))
 min(degree(grafo))
 dd<-degree.distribution(grafo)
@@ -75,4 +86,5 @@ boxplot(cc)
 max(cc)
 min(cc)
 which.max(cc)
-
+0.4082482904638631-0.4
+0.00824829>0.01

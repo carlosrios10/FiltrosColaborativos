@@ -68,12 +68,17 @@ names(ratingsMean)<-c("user_id","venue_id","rating")
 head(ratingsMean)
 str(ratingsMean)
 rRMatrix <- as(ratingsMean, "realRatingMatrix")
-m<-as(rRMatrix, "dgTMatrix")
+rRMatrixReducido<- rRMatrix[rowCounts(rRMatrix)>100,]
+m<-as(rRMatrixReducido, "dgTMatrix")
 head(m)
+str(m)
 m[1:2,1:10]
 cor(m)
+sim<-corSimMat(m,  method="pearson")
+str(sim)
 
-sim<-similarity(rRMatrix, method = "pearson")
+head(sim)
+sim<-similarity(m, method = "pearson")
 ##Crear un recomendador
 userCFModel <- Recommender(rRMatrix, method = "UBCF")
 names(getModel(userCFModel))
