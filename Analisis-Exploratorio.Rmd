@@ -5,14 +5,111 @@ date: "Thursday, March 05, 2015"
 output: pdf_document
 ---
 
+Conjunto de datos:
+```{r}
+library(plyr)
+library(ggplot2)
+ratings<-read.csv(file = "C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",header=F);
+names(ratings)<-c("user","item","rating")
+head(ratings)
+```
+Cantidad de usuarios y de items.
 
 ```{r}
-summary(cars)
+length(unique(ratings$user))
+length(unique(ratings$item))
+
+```
+Medidas resumen de los ratings.
+```{r}
+mResumen<- data.frame(media=mean(ratings$rating),
+                      max=max(ratings$rating), 
+                      min=min(ratings$rating),
+                      var=var(ratings$rating),
+                      sd=sd(ratings$rating))
+mResumen
+```
+Distribucion de los ratings.
+
+```{r, echo=FALSE}
+ggplot(ratings,aes(x=factor(0),y=rating) )+ 
+    geom_boxplot()+ 
+    coord_flip()+  
+    stat_summary(fun.y=mean, geom="point")
+
+ggplot(ratings,aes(x=rating))+geom_histogram(binwidth=.5)
+```
+
+Cuantos lugares visito cada usuario??
+
+```{r}
+visitas<-ddply(ratings,.(user), summarise, visitas=length(item))
+visitas<-visitas[order(visitas$visitas,decreasing = T),]
+head(visitas)
+vResumen<- data.frame(media=mean(visitas$visitas),
+                      max=max(visitas$visitas), 
+                      min=min(visitas$visitas),
+                      var=var(visitas$visitas),
+                      sd=sd(visitas$visitas))
+vResumen
+```
+
+La Distribucion de la cantidad de visitas por usuario.
+```{r}
+## Distribucion de las visitas realizadas por los usuarios.
+ggplot(visitas,aes(x=factor(0),y=visitas) )+ 
+    geom_boxplot()+ 
+    geom_boxplot(outlier.shape=NA)+
+    coord_flip()+  
+    stat_summary(fun.y=mean, geom="point")
+
+ggplot(visitas, aes(x=visitas)) + geom_density() +scale_x_continuous(breaks = seq(20, 500, by = 100)) 
 ```
 
 
+Los lugares cuantas veces fueron visitados??
+```{r}
+lugares<-ddply(ratings,.(item), summarise, visitas=length(user), 
+               totalRating=sum(rating))
+lugares<-lugares[order(lugares$visitas,decreasing = T),]
+head(lugares)
+lResumen<- data.frame(media=mean(lugares$visitas),
+                      max=max(lugares$visitas), 
+                      min=min(lugares$visitas),
+                      var=var(lugares$visitas),
+                      sd=sd(lugares$visitas))
 
-```{r, echo=FALSE}
-plot(cars)
+lResumen
+
+
+```
+
+La Distribucion de la cantidad de visitas recibidas por los lugares.
+
+```{r}
+
+ggplot(lugares,aes(x=factor(0),y=visitas) )+ 
+    geom_boxplot()+ 
+    coord_flip()+  
+    stat_summary(fun.y=mean, geom="point")
+
+ggplot(lugares, aes(x=visitas)) + geom_density() +scale_x_continuous(breaks = seq(1, 500, by = 100)) 
+```
+
+Frecuencia de la cantidad de visitas recibidas por los lugares.
+```{r}
+visitCant<-as.data.frame(table(lugares$visitas), stringsAsFactors=TRUE)
+names(visitCant)<-c("CantVisitas","Freq")
+head(visitCant)
+ggplot(visitCant, aes(x=CantVisitas,y=Freq)) + geom_histogram(stat="identity") 
+```
+
+Solapamiento
+
+```{r}
+solapamiento<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/solapFreq.csv")
+ggplot(solapamiento, aes(x=as.factor(overlap),y=frecuencia)) + geom_histogram(stat="identity") 
+
+solapamiento
 ```
 
