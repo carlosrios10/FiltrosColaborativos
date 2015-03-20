@@ -1,42 +1,33 @@
 library(plyr)
 library(ggplot2)
-
+library(reshape2)
 ### Analisis de los ratings.
-ratings<-read.csv(file = getDataSetPath("ratingsMeanReducido.csv"),header=F);
+ratings<-read.csv(file = "C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",header=F);
+head(ratings)
 names(ratings)<-c("user","item","rating")
+## Cantidad de usuario y de items.
+str(ratings)
+length(unique(ratings$user))
+length(unique(ratings$item))
 mResumen<- data.frame(media=mean(ratings$rating),
                       max=max(ratings$rating), 
                       min=min(ratings$rating),
                       var=var(ratings$rating),
                       sd=sd(ratings$rating))
-
+mResumen
 ggplot(ratings,aes(x=factor(0),y=rating) )+ 
     geom_boxplot()+ 
     coord_flip()+  
     stat_summary(fun.y=mean, geom="point")
 
 ggplot(ratings,aes(x=rating))+geom_histogram(binwidth=.5)
-table(ratings$rating)
-
-theme_remove_all <- theme(axis.text = element_blank(),
-                          axis.title = element_blank(),
-                          axis.ticks =  element_blank(),
-                          axis.ticks.margin = unit(0, "lines"),
-                          axis.ticks.length = unit(0, "cm"))
-
-ggplot(ratings, aes(x = factor(1), y = rating)) + 
-    geom_boxplot(outlier.colour = NA) +
-    geom_jitter(position = position_jitter(width = 0.05)) +
-    scale_y_continuous(expand = c(0, 0)) + 
-    expand_limits(y = c(min(ratings$rating) - 0.1 * diff(range(ratings$rating)), 
-                        max(ratings$rating) + 0.1 * diff(range(ratings$rating)))) + 
-    coord_flip() 
-
 
 ### cuantos lugares visitó cada usuario
-head(ratings)
 visitas<-ddply(ratings,.(user), summarise, visitas=length(item))
+visitas<-visitas[order(visitas$visitas,decreasing = T),]
+#los 5 primeros usuarios con mas visitas.
 head(visitas)
+tail(visitas)
 vResumen<- data.frame(media=mean(visitas$visitas),
                       max=max(visitas$visitas), 
                       min=min(visitas$visitas),
@@ -44,16 +35,20 @@ vResumen<- data.frame(media=mean(visitas$visitas),
                       sd=sd(visitas$visitas))
 
 vResumen
-
+## Distribucion de las visitas realizadas por los usuarios.
 ggplot(visitas,aes(x=factor(0),y=visitas) )+ 
     geom_boxplot()+ 
-    geom_boxplot(outlier.shape=NA)+
     coord_flip()+  
     stat_summary(fun.y=mean, geom="point")
 
+ggplot(visitas, aes(x=visitas)) + geom_density() +scale_x_continuous(breaks = seq(20, 500, by = 100)) 
+
 ### los lugares cuantas veces fueron visitados.
-lugares<-ddply(ratings,.(item), summarise, visitas=length(user), totalRating=sum(rating))
+lugares<-ddply(ratings,.(item), summarise, visitas=length(user), 
+               totalRating=sum(rating))
+lugares<-lugares[order(lugares$visitas,decreasing = T),]
 head(lugares)
+tail(lugares)
 lResumen<- data.frame(media=mean(lugares$visitas),
                       max=max(lugares$visitas), 
                       min=min(lugares$visitas),
@@ -61,13 +56,64 @@ lResumen<- data.frame(media=mean(lugares$visitas),
                       sd=sd(lugares$visitas))
 
 lResumen
-
+##Distribucion de las cantidades de veces que fueron visitados los lugares.
 ggplot(lugares,aes(x=factor(0),y=visitas) )+ 
     geom_boxplot()+ 
     coord_flip()+  
     stat_summary(fun.y=mean, geom="point")
 
+ggplot(lugares, aes(x=visitas)) + geom_density() +scale_x_continuous(breaks = seq(1, 500, by = 100)) 
+## Frecuencia de las cantidad de visitas.
+visitCant<-as.data.frame(table(lugares$visitas), stringsAsFactors=TRUE)
+names(visitCant)<-c("CantVisitas","Freq")
+head(visitCant)
+ggplot(visitCant, aes(x=(CantVisitas),y=Freq)) + geom_histogram(stat="identity") 
 
+## Solapamiento
+solapamiento<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/solapFreq.csv")
+solapamiento
+ggplot(solapamiento, aes(x=as.factor(overlap),y=frecuencia)) + geom_histogram(stat="identity") 
+
+
+
+path<-"C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/usuariosSolapa"
+file<-paste(path,"/",1,".csv",sep="")    
+solapamiento<-read.csv(file)
+for(i in 2:17778){
+    print(i)
+    file<-paste(path,"/",i,".csv",sep="");    
+    df<-read.csv(file);
+    solapamiento<-rbind(solapamiento,df);    
+}
+head(solapamiento)
+combinatoria<-function(valor){
+    return (dim(combn(valor, 2))[2])
+}
+(17778*17778)/2
+combinatoria(17778)
+combn(17778,2)
+overlap<-lapply(lugares$visitas[lugares$visitas>1],combinatoria)
+overlapdf <-data.frame(overlap = unlist(overlap))
+lugares$overlap[lugares$visitas==1]<-0
+lugares$overlap[lugares$visitas>1]<-overlapdf[,1]
+max(lugares$overlap)
+min(lugares$overlap)
+max(lugares$overlap)/30
+str(lugares)
+head(lugares)
+tail(lugares,n=20)
+table(lugares$overlap)
+f<-countdf <- as.data.frame(table(lugares$overlap), stringsAsFactors=TRUE)
+ggplot(data=f, aes(x=Var1, y=Freq)) + geom_bar(stat="identity")
+summary(lugares)
+sum(f$Freq)
+lugares$visitas-min(lugares$visitas)/(max(lugares$visitas)-min(lugares$visitas))
+lugares$visitasN<-(lugares$visitas-min(lugares$visitas))/diff(range(lugares$visitas))
+lugares$visitasS<-scale(lugares[,2])
+mean(lugares$visitasS)
+sd(lugares$visitasS)
+head(lugares)
+range(lugares$visitas)
 ###Analisis Cantidad de Vecinos.
 ### vecinos calculados con la correlacion Pearson.
 
@@ -94,35 +140,15 @@ head(usuariosVecinosT)
 tail(usuariosVecinosT)
 ddply(usuariosVecinosT,.(Threshold),summarise,mean=mean(CantVecinos), total= sum(CantVecinos),totalCeros=sum(CantVecinos==0))
 
+###
 
-par(mfrow=c(2,2))
-
-uno = cbind(anscombe[1],anscombe[5])
-attach(uno)
-plot(x1, y1, xlim = c(3, 19), ylim = c(3, 13))
-abline(lm(y1~x1))
-
-dos = cbind(anscombe[2],anscombe[6])
-attach(dos)
-plot(x2, y2, xlim = c(3, 19), ylim = c(3, 13))
-abline(lm(y2~x2))
-
-tres = cbind(anscombe[3],anscombe[7])
-attach(tres)
-plot(x3, y3, xlim = c(3, 19), ylim = c(3, 13))
-abline(lm(y3~x3))
-
-cuatro = cbind(anscombe[4],anscombe[8])
-attach(cuatro)
-plot(x4, y4, xlim = c(3, 19), ylim = c(3, 13))
-abline(lm(y4~x4))
-
-
-theme_set(theme_bw(base_size=18))
-
-anscombe_m <- data.frame()
-
-for(i in 1:4)
-    anscombe_m <- rbind(anscombe_m, data.frame(set=i, x=anscombe[,i], y=anscombe[,i+4]))
-
-ggplot(anscombe_m, aes(x, y)) + geom_point(size=5, color="red", fill="orange", shape=21) + geom_smooth(method="lm", fill=NA, fullrange=TRUE) + facet_wrap(~set)
+mdat <- matrix(c(0,1,1,0,0,0, 
+                 1,0,1,1,0,0, 
+                 1,1,0,0,1,0, 
+                 0,1,0,0,0,1, 
+                 0,0,1,0,0,1, 
+                 0,0,0,1,1,0),
+               nrow = 6, ncol = 6, byrow = TRUE,
+               dimnames = list(c("1", "2","3","4","5","6"),
+                               c("1", "2","3","4","5","6")))
+cor(mdat,method="pearson")

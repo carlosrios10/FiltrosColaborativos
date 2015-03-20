@@ -1,7 +1,7 @@
 rm(list = ls())
 install.packages("recommenderlab")
 install.packages("data.table")
-library("recommenderlab")
+library(recommenderlab)
 library(plyr)
 library(Hmisc)
 ###lectura del set de datos
@@ -69,6 +69,7 @@ head(ratingsMean)
 str(ratingsMean)
 rRMatrix <- as(ratingsMean, "realRatingMatrix")
 rRMatrixReducido<- rRMatrix[rowCounts(rRMatrix)>100,]
+rRMatrix[1]
 m<-as(rRMatrixReducido, "dgTMatrix")
 head(m)
 str(m)

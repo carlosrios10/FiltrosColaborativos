@@ -68,6 +68,11 @@ ggplot(data=resThr, aes(x=Threshold, y=value)) +
 
 ggplot(data=resThr, aes(x=Threshold, y=value, group=variable, colour=variable)) + 
     geom_line(aes(linetype=variable)) + geom_point(aes(shape=variable),size=4)
++    facet_grid(variable ~ .)
 
-+
-    facet_grid(variable ~ .)
+### Resultados segun similitud estructural.
+simEstr<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCFTodosSimEstr.csv")
+ggplot(data=simEstr, aes(x=as.factor(Threshold),y=Mae,fill=Similitud))+ 
+    geom_bar(stat="identity",position=position_dodge())
+
+
