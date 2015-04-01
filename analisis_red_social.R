@@ -1,5 +1,6 @@
+getwd()
 library(igraph)
-socialgraphData<-read.csv(getDataSetPath("Csocialgraph.csv"))
+socialgraphData<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/socialgraph.csv")
 ratingsMeanReducido<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",
                               header=F)
 
@@ -18,8 +19,6 @@ length(unique(socialgraphData$first_user_id))
 length(unique(socialgraphData$second_user_id))
 socialgraphData$first_user_id<-as.character(socialgraphData$first_user_id)
 socialgraphData$second_user_id<-as.character(socialgraphData$second_user_id)
-
-
 
 
 sum(vertices%notin%socialgraphData$first_user_id)
@@ -58,6 +57,22 @@ summary(grafo)
 adj<-get.adjacency(grafo)
 str(adj)
 adj[1,1:10]
+## Analisis de red social completa.
+socialgraphData<-read.csv("datasets/foursquare/datasets_csv/socialgraph.csv", colClasses="character")
+head(socialgraphData)
+str(socialgraphData)
+grafo<-graph.data.frame(socialgraphData,directed = T, vertices = NULL)
+grafoU<- as.undirected(grafo,mode ="collapse")
+27098472/2
+user<-read.csv("datasets/foursquare/datasets_csv/users.csv")
+head(user)
+g2 <- graph( c(1,2,2,3,3,4,5,6), directed=T )
+plot(g2)
+str(user)
+length(unique(user$id))
+
+
+write.graph(grafoU,file="datasets/foursquare/datasets_csv/redSocial.graphml",format="graphml")
 
 ## Analisis de la red social reducida
 redSocialDF<-read.csv(file = getDataSetPath("redSocialReducida.csv"),header = F,

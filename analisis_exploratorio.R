@@ -1,7 +1,9 @@
 library(plyr)
 library(ggplot2)
 library(reshape2)
-### Analisis de los ratings.
+### Analisis de los ratings reducidos del total de rating.
+
+### Analisis de los ratings reducidos.
 ratings<-read.csv(file = "C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",header=F);
 head(ratings)
 names(ratings)<-c("user","item","rating")
