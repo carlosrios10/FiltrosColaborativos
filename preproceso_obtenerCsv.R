@@ -1,7 +1,7 @@
 wd<-switch(Sys.info()["nodename"][[1]],
                            'USUARIOÇ-PC'="C:/Users/Usuarioç/Desktop/carlos/Tesis/workspaceR")
 wd<-getwd()
-setwd(paste(wd,"workspaceR/Recomendacion/FiltrosColaborativos",sep = "/"))
+setwd("D:\\DOCTORADO\\Proyectos\\datos")
 
 # Content of Files
 # users.dat: consists of a set of users such that each user has a unique id and a geospatial location (latitude and longitude) that represents the user home town location.

@@ -140,15 +140,14 @@ head(usuariosVecinosT)
 tail(usuariosVecinosT)
 ddply(usuariosVecinosT,.(Threshold),summarise,mean=mean(CantVecinos), total= sum(CantVecinos),totalCeros=sum(CantVecinos==0))
 
-###
+##################################
+##########Analizando checkins#####
+getwd()
+setwd("D:\\DOCTORADO\\Proyectos\\Recomendacion\\FiltrosColaborativos")
+checkins<-read.csv(file="D:\\DOCTORADO\\Proyectos\\datos\\datasets_csv\\checkins.csv")
+head(checkins)
+str(checkins)
+checkins$created_at<-as.character(checkins$created_at)
+checkins$dataTime<-parse_date_time(checkins$created_at,"%y%m%d %H%M%S")
+week(checkins$dataTime[1])
 
-mdat <- matrix(c(0,1,1,0,0,0, 
-                 1,0,1,1,0,0, 
-                 1,1,0,0,1,0, 
-                 0,1,0,0,0,1, 
-                 0,0,1,0,0,1, 
-                 0,0,0,1,1,0),
-               nrow = 6, ncol = 6, byrow = TRUE,
-               dimnames = list(c("1", "2","3","4","5","6"),
-                               c("1", "2","3","4","5","6")))
-cor(mdat,method="pearson")
