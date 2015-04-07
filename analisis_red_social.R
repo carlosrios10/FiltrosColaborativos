@@ -75,15 +75,80 @@ length(unique(user$id))
 write.graph(grafoU,file="datasets/foursquare/datasets_csv/redSocial.graphml",format="graphml")
 
 ## Analisis de la red social reducida
-redSocialDF<-read.csv(file = getDataSetPath("redSocialReducida.csv"),header = F,
-                      colClasses="character");
-
-redSocialDF<-read.csv(file ="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/redSocialReducida.csv",header = F,
-                      colClasses="character");
-
+redSocialDF<-read.csv(file ="datasets/foursquare/datasets_csv/redSocialReducida.csv",header = F,colClasses="character");
+grafoReducido<-read.graph(file ="datasets/foursquare/datasets_csv/redSocialReducida.graphml",format="graphml")
 grafo<-graph.data.frame(redSocialDF, directed=T, vertices=NULL)
 grafoU<- as.undirected(grafo,mode ="collapse")
 write.graph(grafoU,file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/redSocialReducida.",format="pajek")
+is.simple(grafoReducido)
+# cantidad de nodos 
+vcount(grafoReducido)
+# cantidad de aristas
+ecount(grafoReducido)
+# es dirigido
+is.directed(grafoReducido)
+# informacion sobre la conexion de la red.
+is.connected(grafoReducido, mode="weak")
+is.connected(grafoReducido, mode="strong")
+# Grados
+sort(degree(grafoReducido, mode="all"))
+# Análisis de las distribuciones de grados
+
+plot(degree.distribution(grafoReducido, cumulative = FALSE, mode="all"),type="h", xlab="grado", ylab="frecuencia")
+points(degree.distribution(grafoReducido, cumulative = FALSE, mode="all"))
+plot(degree.distribution(grafoReducido, cumulative = TRUE, mode="all"), type="l", xlab="grado", ylab="frec. acumulada")
+
+# El diámetro de la red y quienes participan
+diameter(grafoReducido, unconnected=F)
+diameter(grafoReducido, unconnected=T)
+get.diameter(grafoReducido, unconnected=T)
+V(grafoReducido)[get.diameter(grafoReducido, unconnected=T)]
+
+# intermediacion
+betweenness.estimat
+# densidad
+graph.density(grafoReducido)
+
+###################### mundo pequeño
+plf.red <- power.law.fit(degree(grafoReducido,mode="all"))
+## ¿El parámetro alfa de la función es mayor que 1? ¿Si? OK
+plf.red$alpha
+## ¿El test de Kologorov-Smirnov es no significativo? OK
+plf.red$KS.p
+## 
+plf.red$xmin
+
+plf.red.2 <- power.law.fit(degree(grafoReducido,mode="all"), xmin=7)
+plf.red.2$KS.p
+## Calculo y testeo de la asortividad
+assortativity.degree(grafoReducido)
+## ¿Cuál es el clique más grande de la red (conexiones no dirigidas)? 
+red.lqs <- largest.cliques(grafoReducido)
+red.lqs[[1]]
+V(grafoReducido)[red.lqs[[1]]]
+red.lc.1 <- induced.subgraph(grafoReducido, V(grafoReducido)[red.lqs[[1]]])
+plot(red.lc.1,vertex.size=6, vertex.label=NA)
+### Y ahora buscamos clusters dentro del grafo.
+red.wc.cm <- walktrap.community(grafoReducido)
+V(grafoReducido)$grupo <- red.wc.cm$membership
+
+components <- red.wc.cm$membership
+colours = sample ( rainbow ( max ( components )+ 1) )
+V(grafoReducido)$color = colours [ components +1]
+
+
+png(filename="walktrap2.png",width = 1600 , height=900)
+plot(grafoReducido, layout=layout,vertex.size=3, vertex.label=NA)
+dev.off()
+
+
+red.eb.cm <- edge.betweenness.community(grafoReducido)
+
+png(filename="eb.png",width = 1600 , height=900)
+plot(grafoReducido, layout=layout.auto,vertex.color=red.eb.cm$membership, edge.arrow.size=0.3,vertex.size=6, vertex.label=NA)
+dev.off()
+
+str(grafoReducido)
 is.directed(grafo)
 degree(grafoU,v="30848")
 max(degree(grafo,mode="all"))
