@@ -1,0 +1,14 @@
+---
+title: "UBCF-SimEstruc"
+author: "carlos rios"
+date: "Friday, March 20, 2015"
+output: pdf_document
+---
+
+```{r}
+library(ggplot2)
+simEstr<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCFTodosSimEstr.csv")
+simEstr
+ggplot(data=simEstr, aes(x=as.factor(Threshold),y=Mae,fill=Similitud))+ 
+    geom_bar(stat="identity",position=position_dodge())
+```

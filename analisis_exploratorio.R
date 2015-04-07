@@ -1,7 +1,10 @@
 library(plyr)
 library(ggplot2)
 library(reshape2)
-### Analisis de los ratings.
+library(lubridate)
+### Analisis del total de rating.
+
+### Analisis de los ratings reducidos.
 ratings<-read.csv(file = "C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/ratingsMeanReducido.csv",header=F);
 head(ratings)
 names(ratings)<-c("user","item","rating")
@@ -142,12 +145,60 @@ ddply(usuariosVecinosT,.(Threshold),summarise,mean=mean(CantVecinos), total= sum
 
 ##################################
 ##########Analizando checkins#####
-getwd()
-setwd("D:\\DOCTORADO\\Proyectos\\Recomendacion\\FiltrosColaborativos")
-checkins<-read.csv(file="D:\\DOCTORADO\\Proyectos\\datos\\datasets_csv\\checkins.csv")
+checkins<-read.csv(file="datasets/foursquare/datasets_csv/checkins.csv")
 head(checkins)
 str(checkins)
 checkins$created_at<-as.character(checkins$created_at)
-checkins$dataTime<-parse_date_time(checkins$created_at,"%y%m%d %H%M%S")
-week(checkins$dataTime[1])
+checkins$dataTime<-parse_date_time(checkins$created_at,
+                                   "%y%m%d %H%M%S",tz="America/Atikokan")
+checkins$wday<-wday(checkins$dataTime,label=T)
+checkins$hour<-hour(checkins$dataTime)
+checkins$partDay<-""
+checkins$partDay[6<=checkins$hour & checkins$hour<=12]<-"morning"
+checkins$partDay[13<=checkins$hour & checkins$hour<=19]<-"afternoon"
+checkins$partDay[20<=checkins$hour & checkins$hour<=23]<-"evening"
+checkins$partDay[0<=checkins$hour & checkins$hour<=5]<-"night"
+checkins$hour<-as.factor(checkins$hour)
+checkins$partDay<-as.factor(checkins$partDay)
 
+sum(is.na(checkins$venue_id))
+length(unique(checkins$user_id))
+
+res <- lapply(with(checkins, paste(latitude, longitude, sep = ",")), geocode, output = "more")
+city = sapply(res, "[[", "locality")
+length(city)
+transform(df, city = sapply(res, "[[", "locality"))
+r<-geocode("34.048381,-118.266164",output = "more")
+r$address
+table(resulatdo$country)
+
+ggplot(data=checkins, aes(x=wday)) +
+        geom_bar()
+
+ggplot(data=checkins, aes(x=partDay)) +
+        geom_bar()
+
+ggplot(data=checkins, aes(x=hour)) +
+        geom_bar()
+### venues
+venues<-read.csv(file="datasets/foursquare/datasets_csv/venues.csv")
+sum(is.na(venues$longitude))
+sum(!complete.cases(venues))
+locality1<-getLocality(venues[6:6,c("latitude","longitude")])
+warnings()
+head(venues)
+df<- data.frame(long=venues[1:10000,"longitude"], 
+                lat=venues[1:10000,"latitude"], 
+                city=venues[1:10000,"id"])
+
+geo.dist = function(df) {
+        require(geosphere)
+        d <- function(i,z){         # z[1:2] contain long, lat
+                dist <- rep(0,nrow(z))
+                dist[i:nrow(z)] <- distHaversine(z[i:nrow(z),1:2],z[i,1:2])
+                return(dist)
+        }
+        dm <- do.call(cbind,lapply(1:nrow(df),d,df))
+        return(as.dist(dm))
+}
+d<- geo.dist(df)
