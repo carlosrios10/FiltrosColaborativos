@@ -91,3 +91,81 @@ latlong2state <- function(pointsDF) {
         stateNames <- sapply(states_sp@polygons, function(x) x@ID)
         stateNames[indices]
 }
+#### fubcion para onbtener rating de una ciudad de estados unidos
+earth.dist <- function (long1, lat1, long2, lat2)
+{
+    rad <- pi/180
+    a1 <- lat1 * rad
+    a2 <- long1 * rad
+    b1 <- lat2 * rad
+    b2 <- long2 * rad
+    dlon <- b2 - a2
+    dlat <- b1 - a1
+    a <- (sin(dlat/2))^2 + cos(a1) * cos(b1) * (sin(dlon/2))^2
+    c <- 2 * atan2(sqrt(a), sqrt(1 - a))
+    R <- 6378.145
+    d <- R * c
+    return(d)
+}
+
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+    library(grid)
+    
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+    
+    numPlots = length(plots)
+    
+    # If layout is NULL, then use 'cols' to determine layout
+    if (is.null(layout)) {
+        # Make the panel
+        # ncol: Number of columns of plots
+        # nrow: Number of rows needed, calculated from # of cols
+        layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                         ncol = cols, nrow = ceiling(numPlots/cols))
+    }
+    
+    if (numPlots==1) {
+        print(plots[[1]])
+        
+    } else {
+        # Set up the page
+        grid.newpage()
+        pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+        
+        # Make each plot, in the correct location
+        for (i in 1:numPlots) {
+            # Get the i,j matrix positions of the regions that contain this subplot
+            matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+            
+            print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                            layout.pos.col = matchidx$col))
+        }
+    }
+}
+
+################## calcula la distancia entre dos puntos gps
+
+geodetic.distance <- function(point1, point2)
+{
+    R <- 6371
+    p1rad <- point1 * pi/180
+    p2rad <- point2 * pi/180
+    d <- sin(p1rad[2])*sin(p2rad[2])+cos(p1rad[2])*cos(p2rad[2])*cos(abs(p1rad[1]-p2rad[1]))    
+    d <- acos(d)
+    R*d
+}
+
+
+

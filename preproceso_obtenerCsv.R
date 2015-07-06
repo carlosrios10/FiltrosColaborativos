@@ -45,7 +45,7 @@ tail(checkinsData)
 checkinsData<-checkinsData[-1021967,]
 write.csv(checkinsData,file="datasets_csv/checkins.csv", row.names = F)
 
-readLines("foursquare/umn_foursquare_datasets/ratings.dat",n=2)
+readLines("datasets/foursquare/umn_foursquare_datasets/ratings.dat",n=2)
 ratingsData<-read.delim('foursquare/umn_foursquare_datasets/ratings.dat', header = F, sep="|",skip=2) 
 names(ratingsData)<-c("user_id","venue_id","rating")
 head(ratingsData)

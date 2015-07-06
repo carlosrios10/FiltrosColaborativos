@@ -75,4 +75,90 @@ simEstr<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/re
 ggplot(data=simEstr, aes(x=as.factor(Threshold),y=Mae,fill=Similitud))+ 
     geom_bar(stat="identity",position=position_dodge())
 
+#### REsultados JAIIO
+ratingReducido.result<-read.csv("datasets/foursquare/resultados/resultadosUBCFTodosJAIIO.csv")
+comparacion<-read.csv("datasets/foursquare/resultados/comparacion_datos_reducidos.csv",sep = ";")
 
+ratingReducido.result$metodo<-paste(ratingReducido.result$Similitud,
+                                    ratingReducido.result$TVecinos,
+                                    ratingReducido.result$Nvecinos,
+                                    ratingReducido.result$Threshold,sep="-")
+
+ratingReducido.result<-ratingReducido.result[,c("metodo","Mae","Rms")]
+str(ratingReducido.result)
+ratingReducido.result$metodo[1]<-"C-T-06"
+ratingReducido.result$metodo[2]<-"C-T-07"
+ratingReducido.result$metodo[3]<-"C-T-08"
+ratingReducido.result$metodo[4]<-"C-T-09"
+ratingReducido.result$metodo[5]<-"C-KF-10"
+ratingReducido.result$metodo[6]<-"C-kF-60"
+ratingReducido.result$metodo[7]<-"C-kF-120"
+ratingReducido.result$metodo[8]<-"C-KF-ALL"
+ratingReducido.result$metodo[9]<-"C-KFF-10"
+ratingReducido.result$metodo[10]<-"C-KFF-60"
+ratingReducido.result$metodo[11]<-"C-KFF-120"
+ratingReducido.result$metodo[12]<-"C-KFF-ALL"
+ratingReducido.result$metodo[13]<-"S-T-06"
+ratingReducido.result$metodo[14]<-"S-T-07"
+ratingReducido.result$metodo[15]<-"S-T-08"
+ratingReducido.result$metodo[16]<-"S-T-09"
+
+ratingReducido.result$metodo<-as.factor(ratingReducido.result$metodo)
+ratingReducido.result$metodo <- factor(ratingReducido.result$metodo, levels = ratingReducido.result$metodo[order(ratingReducido.result$Mae)])
+
+ggplot(data=ratingReducido.result, aes(x=metodo,y=Mae))+ 
+    geom_bar(stat="identity",position=position_dodge())+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+### NY
+resultadoNy<-read.csv("datasets/foursquare/resultados/resultadosUBCF_NY_UE.csv")
+head(resultadoNy)
+resultadoNy$metodo<-paste(resultadoNy$Similitud,
+                          resultadoNy$TVecinos,
+                          resultadoNy$Nvecinos,
+                          resultadoNy$Threshold,sep="-")
+
+
+resultadoNy$metodo[1]<-"C-T-06"
+resultadoNy$metodo[2]<-"C-T-07"
+resultadoNy$metodo[3]<-"C-T-08"
+resultadoNy$metodo[4]<-"C-T-09"
+resultadoNy$metodo[5]<-"C-KF-10"
+resultadoNy$metodo[6]<-"C-kF-60"
+resultadoNy$metodo[7]<-"C-kF-120"
+resultadoNy$metodo[8]<-"C-KF-ALL"
+resultadoNy$metodo[9]<-"C-KFF-10"
+resultadoNy$metodo[10]<-"C-KFF-60"
+resultadoNy$metodo[11]<-"C-KFF-120"
+resultadoNy$metodo[12]<-"C-KFF-ALL"
+resultadoNy$metodo[13]<-"S-T-06"
+resultadoNy$metodo[14]<-"S-T-07"
+resultadoNy$metodo[15]<-"S-T-08"
+resultadoNy$metodo[16]<-"S-T-09"
+
+resultadoNy$enfoque[1]<-"clasico"
+resultadoNy$enfoque[2]<-"clasico"
+resultadoNy$enfoque[3]<-"clasico"
+resultadoNy$enfoque[4]<-"clasico"
+resultadoNy$enfoque[5]<-"propuesto"
+resultadoNy$enfoque[6]<-"propuesto"
+resultadoNy$enfoque[7]<-"propuesto"
+resultadoNy$enfoque[8]<-"propuesto"
+resultadoNy$enfoque[9]<-"propuesto"
+resultadoNy$enfoque[10]<-"propuesto"
+resultadoNy$enfoque[11]<-"propuesto"
+resultadoNy$enfoque[12]<-"propuesto"
+resultadoNy$enfoque[13]<-"clasico"
+resultadoNy$enfoque[14]<-"clasico"
+resultadoNy$enfoque[15]<-"clasico"
+resultadoNy$enfoque[16]<-"clasico"
+
+resultadoNy$metodo<-as.factor(resultadoNy$metodo)
+resultadoNy$metodo <- factor(resultadoNy$metodo, levels = resultadoNy$metodo[order(resultadoNy$Mae)])
+
+png(filename="informe-jaiio-2015/figuras/ny_resultado_ubcf.png",width = 400 , height=400)
+ggplot(data=resultadoNy, aes(x=metodo,y=Mae,fill=enfoque))+ 
+    geom_bar(stat="identity",position=position_dodge())+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+dev.off()

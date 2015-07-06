@@ -1,0 +1,57 @@
+---
+title: "Resultados"
+author: "carlos rios"
+output: pdf_document
+---
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+ratingNY.result<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE.csv")
+comparacion<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/comparacion_datos_NY.csv",sep = ";")
+```
+
+```{r}
+ratingNY.result$metodo<-paste(ratingNY.result$Similitud,
+                                    ratingNY.result$TVecinos,
+                                    ratingNY.result$Nvecinos,
+                                    ratingNY.result$Threshold,sep="-")
+
+ratingNY.result<-ratingNY.result[,c("metodo","Mae","Rms")]
+str(ratingNY.result)
+ratingNY.result$metodo[1]<-"C-T-06"
+ratingNY.result$metodo[2]<-"C-T-07"
+ratingNY.result$metodo[3]<-"C-T-08"
+ratingNY.result$metodo[4]<-"C-T-09"
+ratingNY.result$metodo[5]<-"C-KF-10"
+ratingNY.result$metodo[6]<-"C-kF-60"
+ratingNY.result$metodo[7]<-"C-kF-120"
+ratingNY.result$metodo[8]<-"C-KF-ALL"
+ratingNY.result$metodo[9]<-"C-KFF-10"
+ratingNY.result$metodo[10]<-"C-KFF-60"
+ratingNY.result$metodo[11]<-"C-KFF-120"
+ratingNY.result$metodo[12]<-"C-KFF-ALL"
+ratingNY.result$metodo[13]<-"S-T-06"
+ratingNY.result$metodo[14]<-"S-T-07"
+ratingNY.result$metodo[15]<-"S-T-08"
+ratingNY.result$metodo[16]<-"S-T-09"
+
+ratingNY.result$metodo<-as.factor(ratingNY.result$metodo)
+ratingNY.result$metodo <- factor(ratingNY.result$metodo, levels = ratingNY.result$metodo[order(ratingNY.result$Mae)])
+ratingNY.result
+
+```
+
+
+```{r}
+ggplot(data=ratingNY.result, aes(x=metodo,y=Mae))+ 
+    geom_bar(stat="identity",position=position_dodge())+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+```{r}
+comparacion
+```
+
