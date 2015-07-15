@@ -1,8 +1,26 @@
 library(igraph)
 ## Analisis de red social completa.
-socialgraphData<-read.csv("datasets/foursquare/datasets_csv/socialgraph.csv", colClasses="character")
+socialgraphData<-read.csv("datasets/foursquare/datasets_csv/socialgraph2.csv", colClasses="character")
+socialgraphData$first_user_id<-str_trim(socialgraphData$first_user_id)
+socialgraphData$second_user_id<-str_trim(socialgraphData$second_user_id)
+write.table(socialgraphData,file="datasets/foursquare/datasets_csv/socialgraph2.csv", row.names = F, col.names= T,sep=",",quote = F)
+grafoTotal<-graph.data.frame(socialgraphData, directed=T, vertices=NULL)
+grafoTotal<- as.undirected(grafoTotal,mode ="collapse")
+pr<-page.rank(grafoTotal,damping = 0.95)$vector
+degree<-degree(grafoTotal)
+closeness<-closeness(grafoTotal)
+betweenness<-betweenness(grafoTotal)
+head(pc)
+tail(pc)
+pc[1,]<-NULL
+str(pc)
+boxplot(pc$Temperature.Difference.from.100)
 
-## Analisis de la red social reducida
+boxplot(pr)
+boxplot(degree)
+boxplot()
+
+## Analisis de la red social reducida 
 redSocialDF<-read.csv(file ="datasets/foursquare/datasets_csv/redSocialReducida.csv",header = F,colClasses="character");
 grafoReducido<-read.graph(file ="datasets/foursquare/datasets_csv/redSocialReducida.graphml",format="graphml")
 grafo<-graph.data.frame(redSocialDF, directed=T, vertices=NULL)
@@ -181,6 +199,10 @@ mean(neighborhood.size(grafoNY,order=2))
 ###### PageRank ###############
 grafoReducido<-read.graph(file ="datasets/foursquare/datasets_csv/NY/grafo_users_check_NY2_UE.graphml",format="graphml")
 grafoReducido2<-read.csv(file ="datasets/foursquare/datasets_csv/NY/grafo_users_check_NY2_UE.csv")
+
+
+
+                                                                    
 head(grafoReducido2)
 length(unique(grafoReducido2$to))
 plot(grafoReducido)
@@ -193,4 +215,11 @@ authority.score(g2)$vector
 hits
 
 pr<-page.rank(grafoReducido,damping = 0.95)$vector
+str(pr)
+pr["22"]
+1.5569291130174845E-5
+9.874839e-06 
+
+head(pr)
+which.max(pr) 
 hist(pr)

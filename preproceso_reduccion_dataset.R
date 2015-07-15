@@ -234,14 +234,35 @@ table(checkinsVUENY$wday)
 table(checkinsVUENY$isWday)
 table(checkinsVUENY$partDay)
 
-#######  Reduccion de datos a Checkins en NY y personas que realizaron 5 o mas
+#######  Reduccion de datos a Checkins en NY y personas que realizaron 3 o mas
 library(plyr)
+library(ggplot2)
 ratingVNY<-read.csv(file="datasets/foursquare/datasets_csv/NY/rating_NY2_UE.csv",header=F)
 venues<-read.csv(file="datasets/foursquare/datasets_csv/NY/venues_check_NY2_UE.csv",colClass="character")
 users<-read.csv(file="datasets/foursquare/datasets_csv/NY/users_check_NY2_UE.csv",colClass="character")
 checkinsVUE<-read.csv(file="datasets/foursquare/datasets_csv/NY/checkins_check_NY_UE.csv",header=T)
-socialgraphData<-read.csv("datasets/foursquare/datasets_csv/NY/grafo_users_check_NY2_UE.csv")
 
+venues_cant_check<-ddply(ratingVNY,.(V2),summarize,freq=length(V2))
+head(venues_cant_check)
+hist(venues_cant_check$freq,freq=FALSE,breaks = 4)
+ggplot(venues_cant_check, aes(x=freq)) + geom_density()
+ggplot(venues_cant_check, aes(x=freq)) +geom_histogram(binwidth=5)
+
+hist(venues_cant_check$freq,
+     probability = TRUE, # In stead of frequency
+     breaks = "FD",      # For more breaks than the default
+     col = "darkslategray4", border = "seashell3")
+lines(density(venues_cant_check$freq),   # Add the kernel density estimate (-.5 fix for the bins)
+      col = "firebrick2", lwd = 3)
+acum<-cumsum(venues_cant_check$freq)
+cbind(acum) 
+
+plot(cumsum(venues_cant_check$freq))
+density(venues_cant_check$freq)
+?bw.nrd
+bw.nrd0(venues_cant_check$freq)
+
+head(ratingVNY)
 rating_cantidad<-ddply(ratingVNY,.(V1),summarize, freq=length(V1))
 head(rating_cantidad)
 ratingVNY[ratingVNY$V1==38,]
@@ -250,8 +271,30 @@ rating_cantidad<-rating_cantidad[rating_cantidad$freq>2,]
 hist(rating_cantidad$freq)
 boxplot(rating_cantidad$freq)
 length(unique(ratingVNY$V1))
+str(rating_cantidad)
+str(ratingVNY)
+merge<-merge(rating_cantidad,ratingVNY,by.x = "V1",by.y = "V1")
+length(unique(merge$V1))
+head(merge)
+ratingVNY[ratingVNY$V1==38,]
+merge[merge$V1==38,]
+names(merge)<-c("user_id","freq","venue_id","rating")
+head(merge)
+write.table(merge[,c("user_id","venue_id","rating")],file="datasets/foursquare/datasets_csv/NY/rating_NY3_UE.csv", row.names = F, col.names= F,sep=",",quote = F)
+head(users)
+mergeUser<-merge(rating_cantidad,users,by.x="V1",by.y="User")
+head(mergeUser)
+names(mergeUser)<-c("User","freq","latitudeUser","longitudeUser")
+write.table(mergeUser[,c("User","latitudeUser","longitudeUser")],file="datasets/foursquare/datasets_csv/NY/users_check_NY3_UE.csv", row.names = F, col.names= T,sep=",",quote = F)
 
-
+rating_cantidad_venues<-ddply(merge,.(venue_id),summarize, freq=length(venue_id))
+head(venues)
+head(rating_cantidad_venues)
+length(unique(merge$venue_id))
+mergeVenues<-merge(rating_cantidad_venues,venues,by.x="venue_id",by.y="Item")
+head(mergeVenues)
+names(mergeVenues)<-c("Item","freq","latitudeItem","longitudeItem")
+write.table(mergeVenues[,c("Item","latitudeItem","longitudeItem")],file="datasets/foursquare/datasets_csv/NY/venues_check_NY3_UE.csv", row.names = F, col.names= T,sep=",",quote = F)
 
 ##### whather  ################
 library(weatherData)

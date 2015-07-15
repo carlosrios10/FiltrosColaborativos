@@ -1,3 +1,6 @@
+library(plyr)
+library(ggplot2)
+library(lubridate)
 ratingVNY<-read.csv(file="datasets/foursquare/datasets_csv/NY/rating_NY2_UE.csv",header=F)
 venues<-read.csv(file="datasets/foursquare/datasets_csv/NY/venues_check_NY2_UE.csv",colClass="character")
 users<-read.csv(file="datasets/foursquare/datasets_csv/NY/users_check_NY2_UE.csv",colClass="character")
@@ -9,6 +12,7 @@ str(ratingVNY)
 str(venues)
 str(users)
 str(checkins)
+checkins$dataTime<- ymd_hms(checkins$dataTime)
 str(usuariosDistancias)
 
 head(ratingVNY)
@@ -16,6 +20,51 @@ head(venues)
 head(ratingVNY)
 head(checkins)
 head(usuariosDistancias)
+
+cantidad_check_user<-ddply(ratingVNY,.(User),summarise,freq=length(User))
+cantidad_check_venues<-ddply(ratingVNY,.(Venue),summarise,freq=length(Venue))
+
+head(cantidad_check_user)
+table(cantidad_check_user$freq)
+
+head(cantidad_check_venues)
+table(cantidad_check_venues$freq)
+dist_acumulada<-ecdf(cantidad_check_venues$freq)
+
+ch<-seq(1:500)
+ch.p<-dist_acumulada(ch)
+plot(ch.p) ## grafico de la distribucion acumulada F(x)
+plot(1-ch.p) ## grafico de la distribucio acumulada complementaria 1-F(x)
+
+table(checkins$hour) 
+cantidad_check_weekdays<-ddply(checkins,.(isWday,hour),summarize,freq=length(user_id))
+str(cantidad_check_weekdays)
+cantidad_check_weekdays$hour<-as.numeric(cantidad_check_weekdays$hour)
+head(cantidad_check_weekdays)
+
+p <- ggplot(cantidad_check_weekdays, aes(hour, freq))+ geom_line()
+p + facet_grid(. ~ wday)
+
+
+ggplot(checkins, aes(x=dataTime)) + geom_line()
+
+ho<-hour(checkins$dataTime)
+dim(checkins[checkins$hour==0 & checkins$isWday==F,])
+head(checkins)
+ej<-checkins$dataTime[1:3]
+ej<-ej[order(ej)]
+## ordeno los checkins 
+checkins<-checkins[order(checkins$dataTime),]
+head(checkins)
+inter_checkin_time<-diff(checkins$dataTime)
+head(inter_checkin_time)
+inter_checkin_time<-inter_checkin_time/60
+inter_checkin_time.DF<-ecdf(inter_checkin_time)
+inter_checkin_time_sec<-seq(1:1000)
+
+plot(inter_checkin_time.DF(inter_checkin_time_sec))
+plot(1-inter_checkin_time.DF(inter_checkin_time_sec))
+
 #### Agregar distancias a los usuarios ####
 hist(usuariosDistancias$cantidadDeItem)
 hist(usuariosDistancias$distanciaPromedioRecorrida)
