@@ -65,6 +65,17 @@ inter_checkin_time_sec<-seq(1:1000)
 plot(inter_checkin_time.DF(inter_checkin_time_sec))
 plot(1-inter_checkin_time.DF(inter_checkin_time_sec))
 
+#user
+ratingVNY[ratingVNY$V1==40,]
+[416,417,418,419,415]
+
+#vecinos
+[33341, 61863, 335485, 20708, 92023, 27785, 76781, 76509, 20788, 31292]
+
+ratingVNY[ratingVNY$V1==33341,]
+833
+RecommendedItem[item:833, value:4.0], RecommendedItem[item:837, value:3.8586862], RecommendedItem[item:151083, value:3.5454545], RecommendedItem[item:419, value:3.3355079], RecommendedItem[item:99516, value:3.0]]
+
 #### Agregar distancias a los usuarios ####
 hist(usuariosDistancias$cantidadDeItem)
 hist(usuariosDistancias$distanciaPromedioRecorrida)
