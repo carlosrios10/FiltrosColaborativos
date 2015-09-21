@@ -1,0 +1,7 @@
+library(igraph)
+library(stringr)
+grafoTotal<-read.graph(file="datasets/foursquare/datasets_csv/grafoTotal.graphml",format="graphml")
+is.directed(grafoTotal)
+simJaccard<-similarity.jaccard(grafoTotal,vids = c(1:10))
+simDice<-similarity.dice(grafoTotal,vids = c(1:10))
+simInvlog<-similarity.invlogweighted(grafoTotal,vids = c(1:10))

@@ -1,0 +1,94 @@
+---
+author: "carlos rios"
+date: "19 de agosto de 2015"
+output: pdf_document
+---
+
+```{r echo=FALSE}
+library(ggplot2)
+library(reshape2)
+```
+
+## Neighbor Weighting
+
+
+```{r echo=FALSE}
+varibles<-c("Agregation","Nvecinos","Mae","Rms","Precision","Recall","F_measure")
+resultadosL<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborWeightingOverlapLiked.csv")
+resultadosLH<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborWeightingOverlapLikedAndHated.csv")
+resultadosL$F_measure<-(2*(resultadosL$Precision*resultadosL$Recall))/(resultadosL$Precision+resultadosL$Recall)
+resultadosLH$F_measure<-(2*(resultadosLH$Precision*resultadosLH$Recall))/(resultadosLH$Precision+resultadosLH$Recall)
+
+```
+
+Overlap Liked
+
+```{r}
+resultadosL[,varibles]
+melt_resultadosL<-melt(resultadosL[,varibles], id.vars = c("Agregation","Nvecinos"))
+
+
+ggplot(melt_resultadosL, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   scale_linetype_manual(values=c("solid","dotdash", "dotted")) + scale_x_continuous(breaks=c(10,60,120,200))+   facet_grid(. ~ variable)
+```
+
+
+Overlap Liked And Hated
+```{r}
+
+resultadosLH[,varibles]
+melt_resultadosLH<-melt(resultadosLH[,varibles], id.vars = c("Agregation","Nvecinos"))
+
+ggplot(melt_resultadosLH, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   scale_linetype_manual(values=c("solid","dotdash", "dotted")) + scale_x_continuous(breaks=c(10,60,120,200))+  facet_grid(. ~ variable)
+
+```
+
+
+
+## Neighbor Selection
+
+```{r echo=FALSE}
+resultadosSL<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborSelectionOverlapLiked.csv")
+resultadosSLH<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborSelectionOverlapLikedAndHated.csv")
+resultadosSL$F_measure<-(2*(resultadosSL$Precision*resultadosSL$Recall))/(resultadosSL$Precision+resultadosSL$Recall)
+resultadosSLH$F_measure<-(2*(resultadosSLH$Precision*resultadosSLH$Recall))/(resultadosSLH$Precision+resultadosSLH$Recall)
+```
+
+Overlap Liked
+```{r}
+resultadosSL[,varibles]
+melt_resultadosSL<-melt(resultadosSL[,varibles], id.vars = c("Agregation","Nvecinos"))
+
+ggplot(melt_resultadosSL, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   scale_linetype_manual(values=c("solid","dotdash", "dotted")) +  scale_x_continuous(breaks=c(10,60,120,200))+ facet_grid(. ~ variable)
+
+```
+
+Overlap Liked And Hated
+
+```{r}
+resultadosSLH[,varibles]
+melt_resultadosSLH<-melt(resultadosSLH[,varibles], id.vars = c("Agregation","Nvecinos"))
+
+ggplot(melt_resultadosSLH, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   scale_linetype_manual(values=c("solid","dotdash", "dotted")) + scale_x_continuous(breaks=c(10,60,120,200))+  facet_grid(. ~ variable)
+
+```
+

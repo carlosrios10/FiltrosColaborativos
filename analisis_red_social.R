@@ -1,11 +1,36 @@
 library(igraph)
+library(stringr)
 ## Analisis de red social completa.
 socialgraphData<-read.csv("datasets/foursquare/datasets_csv/socialgraph2.csv", colClasses="character")
+str(socialgraphData)
 socialgraphData$first_user_id<-str_trim(socialgraphData$first_user_id)
 socialgraphData$second_user_id<-str_trim(socialgraphData$second_user_id)
 write.table(socialgraphData,file="datasets/foursquare/datasets_csv/socialgraph2.csv", row.names = F, col.names= T,sep=",",quote = F)
 grafoTotal<-graph.data.frame(socialgraphData, directed=T, vertices=NULL)
 grafoTotal<- as.undirected(grafoTotal,mode ="collapse")
+write.graph(grafoTotal,file="datasets/foursquare/datasets_csv/grafoTotal.graphml",format="graphml")
+grafoTotal<-read.graph(file="datasets/foursquare/datasets_csv/grafoTotal.graphml",format="graphml")
+d<-degree(grafoTotal)
+pr<-page.rank(grafoTotal)
+ec<-eigen.centrality(grafoTotal)
+ev<-evcent(grafoTotal)
+aut<-authority.score(grafoTotal)
+bet<-betweenness(grafoTotal)
+
+
+head(ev)
+head(d)
+str(d)
+head(pr)
+str(pr)
+pr$vector
+head(pr$vector)
+
+df = data.frame(d)
+df$pr<-pr$vector
+head(df)
+degree(grafoTotal,v = "10")
+str(s)
 pr<-page.rank(grafoTotal,damping = 0.95)$vector
 degree<-degree(grafoTotal)
 closeness<-closeness(grafoTotal)

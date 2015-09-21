@@ -162,3 +162,100 @@ ggplot(data=resultadoNy, aes(x=metodo,y=Mae,fill=enfoque))+
     geom_bar(stat="identity",position=position_dodge())+
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 dev.off()
+###############################
+##varibles<-c("Agregation","Nvecinos","Mae","Rms","Precision","Recall","F_measure")
+varibles<-c("Agregation","Nvecinos","Precision","Recall","F_measure")
+##Neighbor Weighting
+resultadosL<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborWeightingOverlapLiked.csv")
+resultadosLH<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborWeightingOverlapLikedAndHated.csv")
+resultadosL$F_measure<-(2*(resultadosL$Precision*resultadosL$Recall))/(resultadosL$Precision+resultadosL$Recall)
+resultadosLH$F_measure<-(2*(resultadosLH$Precision*resultadosLH$Recall))/(resultadosLH$Precision+resultadosLH$Recall)
+
+##OverlapLiked
+resultadosL[,varibles]
+melt_resultadosL<-melt(resultadosL[,varibles], id.vars = c("Agregation","Nvecinos"))
+setEPS()
+postscript("informe-experimento-likehated/figuras/neighbor_weighting_overlapliked.eps")
+#pdf("informe-experimento-likehated/figuras/neighbor_weighting_overlapliked.pdf")
+ggplot(melt_resultadosL, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+               size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   
+            facet_grid(. ~variable) + 
+            scale_x_continuous(breaks=c(10,60,120,200))+  
+            xlab("Nro. Vecinos") +  
+            ylab("Valor") +  
+            theme(legend.title=element_blank()) + 
+            theme(legend.position="bottom") + 
+            scale_shape_discrete(name  ="name", breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score"))+
+            scale_linetype_manual(values=c("solid","dotdash", "dotted"),name  ="name",breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score")) 
+dev.off()
+##OverlapLikedAndHated 
+resultadosLH[,varibles]
+melt_resultadosLH<-melt(resultadosLH[,varibles], id.vars = c("Agregation","Nvecinos"))
+setEPS()
+postscript("informe-experimento-likehated/figuras/neighbor_weighting_overlaplikedhated.eps")
+ggplot(melt_resultadosLH, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +  
+    facet_grid(. ~variable) + 
+    scale_x_continuous(breaks=c(10,60,120,200))+  
+    xlab("Nro. Vecinos") +  
+    ylab("Valor") +  
+    theme(legend.title=element_blank()) + 
+    theme(legend.position="bottom") + 
+    scale_shape_discrete(name  ="name", breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score"))+
+    scale_linetype_manual(values=c("solid","dotdash", "dotted"),name  ="name",breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score")) 
+dev.off()
+##Neighbor Selection
+resultadosSL<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborSelectionOverlapLiked.csv")
+resultadosSLH<-read.csv("C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/resultados/resultadosUBCF_NY_UE_NeighborSelectionOverlapLikedAndHated.csv")
+resultadosSL$F_measure<-(2*(resultadosSL$Precision*resultadosSL$Recall))/(resultadosSL$Precision+resultadosSL$Recall)
+resultadosSLH$F_measure<-(2*(resultadosSLH$Precision*resultadosSLH$Recall))/(resultadosSLH$Precision+resultadosSLH$Recall)
+
+##OverlapLiked
+resultadosSL[,varibles]
+melt_resultadosSL<-melt(resultadosSL[,varibles], id.vars = c("Agregation","Nvecinos"))
+setEPS()
+postscript("informe-experimento-likehated/figuras/neighbor_selection_overlapliked.eps")
+ggplot(melt_resultadosSL, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +   
+    facet_grid(. ~variable) + 
+    scale_x_continuous(breaks=c(10,60,120,200))+  
+    xlab("Nro. Vecinos") +  
+    ylab("Valor") +  
+    theme(legend.title=element_blank()) + 
+    theme(legend.position="bottom") + 
+    scale_shape_discrete(name  ="name", breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score"))+
+    scale_linetype_manual(values=c("solid","dotdash", "dotted"),name  ="name",breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score")) 
+dev.off()
+##OverlapLikedAndHated 
+resultadosSLH[,varibles]
+melt_resultadosSLH<-melt(resultadosSLH[,varibles], id.vars = c("Agregation","Nvecinos"))
+setEPS()
+postscript("informe-experimento-likehated/figuras/neighbor_selection_overlaplikedhated.eps")
+ggplot(melt_resultadosSLH, aes(x=Nvecinos, y=value)) +
+    geom_line(aes(linetype=Agregation), # Line type depends on cond
+              size = 1) +       # Thicker line
+    geom_point(aes(shape=Agregation),
+               fill = "white", # Shape depends on cond
+               size = 4)   +  
+    facet_grid(. ~variable) + 
+    scale_x_continuous(breaks=c(10,60,120,200))+  
+    xlab("Nro. Vecinos") +  
+    ylab("Valor") +  
+    theme(legend.title=element_blank()) + 
+    theme(legend.position="bottom") + 
+    scale_shape_discrete(name  ="name", breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score"))+
+    scale_linetype_manual(values=c("solid","dotdash", "dotted"),name  ="name",breaks=c("BASE", "HARMONIC_MEAN","ONLY_SCORE"),labels=c("Base", "Harmonic Mean","Only Score")) 
+dev.off()
+

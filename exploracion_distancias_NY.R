@@ -1,0 +1,1 @@
+distItemItem<-read.csv(file="C:/Users/Usuarioç/Desktop/carlos/Tesis/datasets/foursquare/datasets_csv/distancias/")
